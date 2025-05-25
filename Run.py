@@ -20,7 +20,7 @@ def run_model_segments(model_func, data_config):
 
 if __name__ == '__main__':
     # datasets
-    predata = Pre_Data.Data_loading('backends/2_Materials_info.xlsx')
+    predata = Pre_Data.Data_loading('backends/data.xlsx')
     data_train_Low, data_train_Medium, data_train_High = predata[0], predata[3], predata[6]
     data_val_Low, data_val_Medium, data_val_High = predata[1], predata[4], predata[7]
     data_test_Low, data_test_Medium, data_test_High = predata[2], predata[5], predata[8]

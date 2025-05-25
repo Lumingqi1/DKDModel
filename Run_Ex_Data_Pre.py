@@ -51,7 +51,7 @@ def save_tools(y_true, y_pred, model_name, type):
 if __name__ == '__main__':
     random_seed = 42
 
-    predata = Pre_Data.Data_loading('backends/2_Materials_info.xlsx')
+    predata = Pre_Data.Data_loading('backends/data.xlsx')
 
     # datasets
     data_train_Low, data_train_Medium, data_train_High = predata[0], predata[3], predata[6]
