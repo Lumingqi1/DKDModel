@@ -1,7 +1,7 @@
 from backends import Pre_Data
-from Conventional_Model import (Model1_DT, Model2_KNN, Model3_SVR, Model4_RF,
+from Model_Conventional import (Model1_DT, Model2_KNN, Model3_SVR, Model4_RF,
                                 Model5_XGBoost, Model6_CatBoost, Model7_CNN, Model8_DNN)
-from FE_Model import (Model9_FEIDEAL_XGB, Model10_FEIDEAL_DNN, Model11_FERF_XGB, Model12_FERF_DNN,
+from Model_FE import (Model9_FEIDEAL_XGB, Model10_FEIDEAL_DNN, Model11_FERF_XGB, Model12_FERF_DNN,
                       Model13_FEXGB_XGB, Model14_FEXGB_DNN, Model15_FEGMM_XGB, Model16_FEGMM_DNN)
 import multiprocessing
 
@@ -20,7 +20,7 @@ def run_model_segments(model_func, data_config):
 
 if __name__ == '__main__':
     # datasets
-    predata = Pre_Data.Data_loading('1_backends/2_Materials_info.xlsx')
+    predata = Pre_Data.Data_loading('backends/2_Materials_info.xlsx')
     data_train_Low, data_train_Medium, data_train_High = predata[0], predata[3], predata[6]
     data_val_Low, data_val_Medium, data_val_High = predata[1], predata[4], predata[7]
     data_test_Low, data_test_Medium, data_test_High = predata[2], predata[5], predata[8]

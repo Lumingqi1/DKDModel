@@ -17,7 +17,7 @@ def create_CNN_model(input_shape, filters, dense_units1, dense_units2):
         Dense(dense_units1, activation='relu'),
         Dense(dense_units2, activation='relu'),
         Dense(dense_units2, activation='relu'),
-        Dropout(rate=0.3),  # 修正参数名
+        Dropout(rate=0.3),
         Dense(1, activation='linear')
     ])
     model.compile(optimizer='adam', loss='mse', metrics=['mae'])

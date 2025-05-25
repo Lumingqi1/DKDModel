@@ -77,7 +77,7 @@ def Ex_Data(path=None):
             df[col] = 0
 
     # Obtain the RDKit fingerprint
-    fp_dict = RDKit_Featurize(filepath='./1_backends/1_compound_info.xlsx')
+    fp_dict = RDKit_Featurize(filepath='./backends/1_compound_info.xlsx')
     ref_fp = RDKFingerprint(Chem.MolFromSmiles("CCO"), fpSize=128, maxPath=7)
 
     # Replace with fingerprints and calculate the similarity

@@ -7,7 +7,7 @@ from rdkit.DataStructs.cDataStructs import CreateFromBitString
 from sklearn.model_selection import train_test_split
 
 # Generate the RDKit fingerprint dictionary
-def RDKit_Featurize(filepath='./1_backends/1_compound_info.xlsx', fp_size=128, max_path=7):
+def RDKit_Featurize(filepath='./backends/1_compound_info.xlsx', fp_size=128, max_path=7):
     data = pd.read_excel(filepath)
     fp_dict = {}
 
@@ -59,7 +59,7 @@ def Data_loading(path):
     df = pd.get_dummies(df, columns=['Porous structure'], prefix='Porous')
 
     # Obtain the RDKit fingerprint
-    fp_dict = RDKit_Featurize(filepath='./1_backends/1_compound_info.xlsx')
+    fp_dict = RDKit_Featurize(filepath='./backends/1_compound_info.xlsx')
     ref_fp = RDKFingerprint(Chem.MolFromSmiles("CCO"), fpSize=128, maxPath=7)
 
     # Replace with fingerprints and calculate the similarity

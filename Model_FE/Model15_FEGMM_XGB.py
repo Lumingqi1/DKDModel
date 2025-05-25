@@ -2,22 +2,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
 import pandas as pd
 from bayes_opt import BayesianOptimization
+from joblib import dump, load
 import os
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.layers import  Dense
-from tensorflow.keras.models import Sequential
+import xgboost as xgb
 from sklearn.mixture import GaussianMixture
-
-def create_DNN_model(input_shape, dense_units1,dense_units2, dense_units3, dense_units4):
-    model = Sequential()
-    model.add(Dense(units=dense_units1, input_dim=input_shape, activation='relu'))
-    model.add(Dense(units=dense_units2, activation='relu'))
-    model.add(Dense(units=dense_units3, activation='relu'))
-    model.add(Dense(units=dense_units4, activation='relu'))
-    model.add(Dense(units=1, activation='linear'))
-    model.compile(optimizer='adam', loss='mse', metrics=['mae'])
-    return model
 
 class ModelOptimizer2:
     def __init__(self, x_train, y_train, x_val, y_val):
@@ -29,32 +19,26 @@ class ModelOptimizer2:
         self.best_rmse = float('inf')
         self.best_params = {}
 
-    def optimize_hyperparams(self, units1, units2, units3, units4, epochs, batch_size):
+    def optimize_hyperparams(self, n_estimators, max_depth):
         params = {
-            'units1': int(round(units1)),
-            'units2': int(round(units2)),
-            'units3': int(round(units3)),
-            'units4': int(round(units4)),
-            'epochs': int(round(epochs)),
-            'batch_size': int(round(batch_size))
+            'n_estimators': int(round(n_estimators)),
+            'max_depth': int(round(max_depth)),
         }
 
-        # Create and train Model8_DNN
-        model = create_DNN_model(
-            self.x_train.shape[1],
-            params['units1'],
-            params['units2'],
-            params['units3'],
-            params['units4']
+        # Create and train model
+        model = xgb.XGBRegressor(
+            objective='reg:squarederror',
+            n_estimators=params['n_estimators'],
+            max_depth=params['max_depth'],
+            learning_rate=0.05,
+            subsample=0.9,
+            colsample_bytree=0.7,
+            reg_alpha=0.1,
+            reg_lambda=1.0,
+            random_state=42
         )
 
-        model.fit(
-            self.x_train,
-            self.y_train,
-            epochs=params['epochs'],
-            batch_size=params['batch_size'],
-            verbose=0
-        )
+        model.fit(self.x_train, self.y_train)
 
         # Evaluate
         y_pred = model.predict(self.x_val)
@@ -68,7 +52,7 @@ class ModelOptimizer2:
 
         return -rmse
 
-def FEGMM_DNN(train, val, test, type):
+def FEGMM_XGB(train, val, test, type):
     # Data loading and preprocessing
     data_train = train
     data_val = val
@@ -93,32 +77,24 @@ def FEGMM_DNN(train, val, test, type):
     x_val = scaler.transform(x_val)
     x_test = scaler.transform(x_test)
 
-    x_train = x_train.reshape(-1, x_train.shape[1], 1)
-    x_val = x_val.reshape(-1, x_val.shape[1], 1)
-    x_test = x_test.reshape(-1, x_test.shape[1], 1)
-
     # Create optimizer2
     optimizer2 = ModelOptimizer2(x_train, y_train, x_val, y_val)
 
-    pbounds2 = {
-        'units1': (16, 256),
-        'units2': (16, 256),
-        'units3': (16, 256),
-        'units4': (16, 256),
-        'epochs': (50, 200),
-        'batch_size': (4, 32)
+    pbounds = {
+        'n_estimators': (100, 500),
+        'max_depth': (5, 30),
     }
 
     # Run optimization2
     bayes_optimizer2 = BayesianOptimization(
         f=optimizer2.optimize_hyperparams,
-        pbounds=pbounds2,
+        pbounds=pbounds,
         random_state=42,
         allow_duplicate_points=True
     )
     bayes_optimizer2.maximize(init_points=15, n_iter=200)
 
-    # Use the best model saved during optimization
+    # Use the best model
     best_model2 = optimizer2.best_model
 
     # Save best parameters
@@ -126,12 +102,13 @@ def FEGMM_DNN(train, val, test, type):
 
     os.makedirs('./output_params', exist_ok=True)
     pd.DataFrame([optimizer_params]).to_excel(
-        f'./output_params/Model16_FEGMM_DNN_{type}.xlsx',
+        f'./output_params/Model15_FEGMM_XGB_{type}.xlsx',
         index=False
     )
+
     # Save model
     os.makedirs('./output_model', exist_ok=True)
-    best_model2.save(f'./output_model/Model16_FEGMM_DNN_{type}.h5')
+    dump(best_model2, f'./output_model/Model15_FEGMM_XGB_{type}.joblib')
 
     # Save parameters and results
     y_pre_test = best_model2.predict(x_test)
@@ -147,7 +124,7 @@ def FEGMM_DNN(train, val, test, type):
     r2_val = r2_score(y_val, y_pre_val)
 
     result = {
-        'name': 'FEGMM_DNN',
+        'name': 'FEGMM_XGB',
         'rmse_train': rmse_train,
         'r2_train': r2_train,
         'rmse_val': rmse_val,

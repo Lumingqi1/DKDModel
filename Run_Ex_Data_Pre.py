@@ -51,7 +51,7 @@ def save_tools(y_true, y_pred, model_name, type):
 if __name__ == '__main__':
     random_seed = 42
 
-    predata = Pre_Data.Data_loading('1_backends/2_Materials_info.xlsx')
+    predata = Pre_Data.Data_loading('backends/2_Materials_info.xlsx')
 
     # datasets
     data_train_Low, data_train_Medium, data_train_High = predata[0], predata[3], predata[6]
@@ -75,7 +75,7 @@ if __name__ == '__main__':
                       'Temperature', 'CO₂ capacity']
             data_train = data_train_High
 
-        data = Ex_Pre_Data.Ex_Data('4_ExInput/Ex_Data.xlsx')
+        data = Ex_Pre_Data.Ex_Data('ExInput/Ex_Data.xlsx')
         data = data[params].copy()
 
         x_train = data_train.drop(columns=['CO₂ capacity'])

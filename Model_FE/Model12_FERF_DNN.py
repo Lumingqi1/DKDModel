@@ -80,7 +80,7 @@ class ModelOptimizer2:
             'batch_size': int(round(batch_size))
         }
 
-        # Create and train Model8_DNN
+        # Create and train Model8
         model = create_DNN_model(
             self.x_train.shape[1],
             params['units1'],

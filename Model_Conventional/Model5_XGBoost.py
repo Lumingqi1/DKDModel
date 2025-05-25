@@ -25,7 +25,7 @@ class ModelOptimizer:
 
         # Create and train XGB
         model = xgb.XGBRegressor(
-            objective='reg:squarederror',  # 回归任务
+            objective='reg:squarederror',
             n_estimators=params['n_estimators'],
             max_depth=params['max_depth'],
             learning_rate=0.05,
