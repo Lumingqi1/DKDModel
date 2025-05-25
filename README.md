@@ -16,9 +16,8 @@ This study is a proof-of-concept; data is limited to peer-reviewed literature on
    conda activate far
 
 ## Workflow
-Locate the `data.xlsx` file provided in the Supporting Information
-Manually copy this file to: ./backends/
-
-This repo has 2 main files:
+1. Locate the `data.xlsx` file provided in the Supporting Information
+2. Manually copy this file to: ./backends/
+3. This repo has 2 main files:
 - Run.py : Generates all 16 models
 - Run_Ex_Data_Pre.py : Predicts the CO2 capacity of Ex-data
